@@ -282,97 +282,97 @@ export const SidebarMenu = [
     ],
   },
 
-  {
-    group: "Pages",
-    contents: [
-      {
-        id: "dash_pages",
-        name: "Authentication",
-        icon: <Icons.UserPlus />,
-        path: "/auth",
-        childrens: [
-          {
-            id: "dash_log",
-            name: "Log In",
-            path: "/auth",
-            childrens: [
-              // {
-              //   name: "Login",
-              //   path: "/auth/login",
-              // },
-              // {
-              //     name: 'Login Simple',
-              //     path: '/auth/login-simple',
-              // },
-              {
-                name: "Login Classic",
-                path: "/auth/login-classic",
-              },
-            ],
-          },
-          {
-            id: "dash_sign",
-            name: "Sign Up",
-            path: "/auth",
-            childrens: [
-              // {
-              //   name: "Signup",
-              //   path: "/auth/signup",
-              // },
-              // {
-              //   name: "Signup Simple",
-              //   path: "/auth/signup-simple",
-              // },
-              {
-                name: "Signup Classic",
-                path: "/auth/signup-classic",
-              },
-            ],
-          },
-          // {
-          //   name: "Lock Screen",
-          //   path: "/auth/lock-screen",
-          // },
-          {
-            name: "Reset Password",
-            path: "/auth/reset-password",
-          },
-          // {
-          //   name: "Error 404",
-          //   path: "/error-404",
-          // },
-          // {
-          //   name: "Error 503",
-          //   path: "/auth/error-503",
-          // },
-        ],
-      },
-      // {
-      //     id: "dash_profile",
-      //     name: 'Profile',
-      //     icon: <Icons.UserSearch />,
-      //     path: '/pages',
-      //     badgeIndicator: <HkBadge bg="danger" indicator className="position-absolute top-0 start-100" />,
-      //     childrens: [
-      //         {
-      //             name: 'Profile',
-      //             path: '/pages/profile',
-      //             grp_name: "apps",
-      //         },
-      //         {
-      //             name: 'Edit Profile',
-      //             path: '/pages/edit-profile',
-      //             grp_name: "apps",
-      //         },
-      //         {
-      //             name: 'Account',
-      //             path: '/pages/account',
-      //             grp_name: "apps",
-      //         },
-      //     ]
-      // },
-    ],
-  },
+  // {
+  //   group: "Pages",
+  //   contents: [
+  //     {
+  //       id: "dash_pages",
+  //       name: "Authentication",
+  //       icon: <Icons.UserPlus />,
+  //       path: "/auth",
+  //       childrens: [
+  //         {
+  //           id: "dash_log",
+  //           name: "Log In",
+  //           path: "/auth",
+  //           childrens: [
+  //             // {
+  //             //   name: "Login",
+  //             //   path: "/auth/login",
+  //             // },
+  //             // {
+  //             //     name: 'Login Simple',
+  //             //     path: '/auth/login-simple',
+  //             // },
+  //             {
+  //               name: "Login Classic",
+  //               path: "/auth/login-classic",
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           id: "dash_sign",
+  //           name: "Sign Up",
+  //           path: "/auth",
+  //           childrens: [
+  //             // {
+  //             //   name: "Signup",
+  //             //   path: "/auth/signup",
+  //             // },
+  //             // {
+  //             //   name: "Signup Simple",
+  //             //   path: "/auth/signup-simple",
+  //             // },
+  //             {
+  //               name: "Signup Classic",
+  //               path: "/auth/signup-classic",
+  //             },
+  //           ],
+  //         },
+  //         // {
+  //         //   name: "Lock Screen",
+  //         //   path: "/auth/lock-screen",
+  //         // },
+  //         {
+  //           name: "Reset Password",
+  //           path: "/auth/reset-password",
+  //         },
+  //         // {
+  //         //   name: "Error 404",
+  //         //   path: "/error-404",
+  //         // },
+  //         // {
+  //         //   name: "Error 503",
+  //         //   path: "/auth/error-503",
+  //         // },
+  //       ],
+  //     },
+  //     // {
+  //     //     id: "dash_profile",
+  //     //     name: 'Profile',
+  //     //     icon: <Icons.UserSearch />,
+  //     //     path: '/pages',
+  //     //     badgeIndicator: <HkBadge bg="danger" indicator className="position-absolute top-0 start-100" />,
+  //     //     childrens: [
+  //     //         {
+  //     //             name: 'Profile',
+  //     //             path: '/pages/profile',
+  //     //             grp_name: "apps",
+  //     //         },
+  //     //         {
+  //     //             name: 'Edit Profile',
+  //     //             path: '/pages/edit-profile',
+  //     //             grp_name: "apps",
+  //     //         },
+  //     //         {
+  //     //             name: 'Account',
+  //     //             path: '/pages/account',
+  //     //             grp_name: "apps",
+  //     //         },
+  //     //     ]
+  //     // },
+  //   ],
+  // },
 
   // {
   //     group: 'Documentation',
