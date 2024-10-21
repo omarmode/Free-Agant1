@@ -73,6 +73,8 @@ const ContactAppBody = ({ fetchContacts, data }) => {
       { Header: "Email", accessor: "email" },
       { Header: "Phone", accessor: "telephone" },
       { Header: "Address", accessor: "address" },
+      { Header: "Country", accessor: "country" }, // العمود الجديد: Country
+      { Header: "Invoice Language", accessor: "invoice_language" }, // العمود الجديد: Invoice Language
       {
         Header: "Actions",
         Cell: ({ row }) => (

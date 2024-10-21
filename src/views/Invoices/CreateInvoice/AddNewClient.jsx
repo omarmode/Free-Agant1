@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { useHistory } from "react-router-dom"; // استيراد useHistory للتنقل
 import axios from "axios"; // استيراد axios
 
 const AddNewClient = ({ show, hide }) => {
+  const history = useHistory(); // لإنشاء التنقل بين الصفحات
+
   const [formData, setFormData] = useState({
     invoice_number: "",
     date: "",
     contact_id: "",
-    status: "pending", // القيمة الافتراضية
-    activity: "consultation", // القيمة الافتراضية
+    status: "paid", // القيمة الافتراضية الجديدة
+    activity: "sent", // القيمة الافتراضية الجديدة
     amount: "",
   });
 
-  const TOKEN = "2|scZqU5WtRRITVOPRkl15INi2xGWZOWHzMIHPgvlxb841da64"; // التوكن
+  // دالة لجلب التوكن المخزن في localStorage
+  const getToken = () => localStorage.getItem("token");
 
   // تحديث القيم عند التغيير في المدخلات
   const handleChange = (e) => {
@@ -30,19 +34,23 @@ const AddNewClient = ({ show, hide }) => {
     console.log("Form Data Being Sent:", formData); // طباعة بيانات النموذج
 
     try {
+      const token = getToken(); // جلب التوكن الديناميكي
       const response = await axios.post(
         "https://accounting.oncallwork.com/api/invoice/create",
         formData, // يتم إرسال formData مباشرة
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${TOKEN}`, // إضافة التوكن في الترويسة
+            Authorization: `Bearer ${token}`, // استخدام التوكن من localStorage
           },
         }
       );
 
       console.log("Response from API:", response.data); // طباعة استجابة الـ API
       alert("Invoice created successfully!"); // رسالة النجاح
+
+      // الانتقال إلى صفحة invoice-list بعد النجاح
+      history.push("invoice-list");
       hide(); // إخفاء الـ Modal عند النجاح
     } catch (error) {
       if (error.response) {
@@ -103,20 +111,22 @@ const AddNewClient = ({ show, hide }) => {
                 value={formData.status}
                 onChange={handleChange}
               >
-                <option value="pending">pending</option>
                 <option value="paid">paid</option>
-                <option value="cancelled">unpaid</option>
+                <option value="unpaid">unpaid</option>
+                <option value="draft">draft</option>
               </Form.Control>
             </Col>
             <Col sm={12} as={Form.Group} className="mb-3">
               <Form.Label>Activity</Form.Label>
               <Form.Control
-                type="text"
+                as="select"
                 name="activity"
                 value={formData.activity}
                 onChange={handleChange}
-                required
-              />
+              >
+                <option value="sent">sent</option>
+                <option value="done">done</option>
+              </Form.Control>
             </Col>
             <Col sm={12} as={Form.Group} className="mb-3">
               <Form.Label>Amount</Form.Label>

@@ -14,10 +14,10 @@ const CreateNewContact = ({ show, close, onContactAdded }) => {
     town: "",
     region: "",
     zip_code: "",
-    country: "",
+    country: "algeria", // الحقل الافتراضي للدولة
     default_payment_terms: "",
     sales_tax_registration_number: "",
-    invoice_language: "English",
+    invoice_language: "english", // بدء اللغة بحرف صغير
   });
 
   const [loading, setLoading] = useState(false); // حالة التحميل أثناء الإرسال
@@ -219,46 +219,56 @@ const CreateNewContact = ({ show, close, onContactAdded }) => {
             </Col>
           </Row>
 
-          <Container>
-            <Row className="mb-3">
-              <Col sm={6}>
-                <Form.Group>
-                  <Form.Label>Default Payment Terms</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="default_payment_terms"
-                    value={contactData.default_payment_terms}
-                    onChange={handleChange}
-                    placeholder="Enter number of days"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
+          <Row className="gx-3">
+            <Col sm={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Country</Form.Label>
+                <Form.Select
+                  name="country"
+                  value={contactData.country}
+                  onChange={handleChange}
+                >
+                  <option value="algeria">Algeria</option>
+                  <option value="bahrain">Bahrain</option>
+                  <option value="comoros">Comoros</option>
+                  <option value="djibouti">Djibouti</option>
+                  <option value="egypt">Egypt</option>
+                  <option value="iraq">Iraq</option>
+                  <option value="jordan">Jordan</option>
+                  <option value="kuwait">Kuwait</option>
+                  <option value="lebanon">Lebanon</option>
+                  <option value="libya">Libya</option>
+                  <option value="morocco">Morocco</option>
+                  <option value="oman">Oman</option>
+                  <option value="palestine">Palestine</option>
+                  <option value="qatar">Qatar</option>
+                  <option value="saudi arabia">Saudi Arabia</option>
+                  <option value="somalia">Somalia</option>
+                  <option value="sudan">Sudan</option>
+                  <option value="syria">Syria</option>
+                  <option value="tunisia">Tunisia</option>
+                  <option value="united arab emirates">
+                    United Arab Emirates
+                  </option>
+                  <option value="yemen">Yemen</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Sales Tax Registration Number</Form.Label>
-              <Form.Control
-                type="text"
-                name="sales_tax_registration_number"
-                value={contactData.sales_tax_registration_number}
-                onChange={handleChange}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Invoice/Estimate Language</Form.Label>
-              <Form.Select
-                name="invoice_language"
-                value={contactData.invoice_language}
-                onChange={handleChange}
-              >
-                <option value="English">English</option>
-                <option value="French">French</option>
-                <option value="Spanish">Spanish</option>
-                <option value="German">German</option>
-              </Form.Select>
-            </Form.Group>
-          </Container>
+          <Form.Group className="mb-3">
+            <Form.Label>Invoice/Estimate Language</Form.Label>
+            <Form.Select
+              name="invoice_language"
+              value={contactData.invoice_language}
+              onChange={handleChange}
+            >
+              <option value="english">english</option>
+              <option value="french">french</option>
+              <option value="spanish">spanish</option>
+              <option value="german">german</option>
+            </Form.Select>
+          </Form.Group>
         </Form>
       </Modal.Body>
 

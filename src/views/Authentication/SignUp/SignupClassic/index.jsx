@@ -20,6 +20,7 @@ const SignupClassic = () => {
     businessName: "",
     password: "",
     passwordConfirmation: "",
+    domain: "", // إضافة حقل domain
   });
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
@@ -47,6 +48,7 @@ const SignupClassic = () => {
           business_name: formData.businessName,
           password: formData.password,
           password_confirmation: formData.passwordConfirmation,
+          domain: formData.domain, // إرسال domain في الطلب
         },
         {
           headers: {
@@ -56,8 +58,10 @@ const SignupClassic = () => {
         }
       );
 
+      const { domain_name, token } = response.data.data;
+
       console.log("Registration successful:", response.data);
-      setMessage("Account created successfully!");
+      setMessage(`Account created successfully! Domain: ${domain_name}`);
 
       // إعادة التوجيه إلى صفحة تسجيل الدخول بعد النجاح
       setTimeout(() => {
@@ -144,6 +148,17 @@ const SignupClassic = () => {
                                 placeholder="Enter your email"
                                 type="email"
                                 value={formData.email}
+                                onChange={handleChange}
+                                required
+                              />
+                            </Col>
+                            <Col lg={12} as={Form.Group} className="mb-3">
+                              <Form.Label>Domain</Form.Label>
+                              <Form.Control
+                                name="domain"
+                                placeholder="Enter your domain"
+                                type="text"
+                                value={formData.domain}
                                 onChange={handleChange}
                                 required
                               />

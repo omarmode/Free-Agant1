@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Modal, Row, Alert } from "react-bootstrap";
 import axios from "axios";
-import { Link, Redirect } from "react-router-dom"; // استيراد Link و Redirect
+import { Redirect } from "react-router-dom"; // استيراد Redirect
 
 const AddNewClient = ({ show, hide }) => {
   // **إدارة حالة الحقول**
@@ -9,8 +9,8 @@ const AddNewClient = ({ show, hide }) => {
     bill_number: "",
     date: "",
     contact_id: "",
-    status: "",
-    activity: "",
+    status: "paid", // القيمة الافتراضية الجديدة
+    activity: "sent", // القيمة الافتراضية الجديدة
     amount: "",
   });
 
@@ -110,24 +110,29 @@ const AddNewClient = ({ show, hide }) => {
               <Form.Group>
                 <Form.Label>Status</Form.Label>
                 <Form.Control
-                  type="text"
+                  as="select"
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  placeholder="Enter Status"
-                />
+                >
+                  <option value="paid">paid</option>
+                  <option value="unpaid">unpaid</option>
+                  <option value="draft">draft</option>
+                </Form.Control>
               </Form.Group>
             </Col>
             <Col sm={12} className="mb-3">
               <Form.Group>
                 <Form.Label>Activity</Form.Label>
                 <Form.Control
-                  type="text"
+                  as="select"
                   name="activity"
                   value={formData.activity}
                   onChange={handleChange}
-                  placeholder="Enter Activity"
-                />
+                >
+                  <option value="sent">sent</option>
+                  <option value="done">done</option>
+                </Form.Control>
               </Form.Group>
             </Col>
             <Col sm={12} className="mb-3">

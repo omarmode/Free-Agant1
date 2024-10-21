@@ -17,14 +17,16 @@ const CombinedInfo = ({ show, hide, client, updateClientData }) => {
   const [town, setTown] = useState(client.town || "");
   const [region, setRegion] = useState(client.region || "");
   const [zipCode, setZipCode] = useState(client.zip_code || "");
-  const [country, setCountry] = useState(client.country || "");
+  const [country, setCountry] = useState(client.country || "algeria");
   const [paymentTerms, setPaymentTerms] = useState(
     client.default_payment_terms || ""
   );
   const [taxNumber, setTaxNumber] = useState(
     client.sales_tax_registration_number || ""
   );
-  const [language, setLanguage] = useState(client.invoice_language || "");
+  const [language, setLanguage] = useState(
+    client.invoice_language || "english"
+  );
   const [tenantId, setTenantId] = useState(client.tenant_id || "");
 
   // إدارة حالة الخطأ والتحميل
@@ -176,29 +178,54 @@ const CombinedInfo = ({ show, hide, client, updateClientData }) => {
           <Row className="gx-3">
             <Col sm={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Address</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Address"
-                />
+                <Form.Label>Country</Form.Label>
+                <Form.Select
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                >
+                  <option value="algeria">Algeria</option>
+                  <option value="bahrain">Bahrain</option>
+                  <option value="comoros">Comoros</option>
+                  <option value="djibouti">Djibouti</option>
+                  <option value="egypt">Egypt</option>
+                  <option value="iraq">Iraq</option>
+                  <option value="jordan">Jordan</option>
+                  <option value="kuwait">Kuwait</option>
+                  <option value="lebanon">Lebanon</option>
+                  <option value="libya">Libya</option>
+                  <option value="morocco">Morocco</option>
+                  <option value="oman">Oman</option>
+                  <option value="palestine">Palestine</option>
+                  <option value="qatar">Qatar</option>
+                  <option value="saudi arabia">Saudi Arabia</option>
+                  <option value="somalia">Somalia</option>
+                  <option value="sudan">Sudan</option>
+                  <option value="syria">Syria</option>
+                  <option value="tunisia">Tunisia</option>
+                  <option value="united arab emirates">
+                    United Arab Emirates
+                  </option>
+                  <option value="yemen">Yemen</option>
+                </Form.Select>
               </Form.Group>
             </Col>
+
             <Col sm={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Town</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={town}
-                  onChange={(e) => setTown(e.target.value)}
-                  placeholder="Town"
-                />
+                <Form.Label>Invoice Language</Form.Label>
+                <Form.Select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                >
+                  <option value="english">english</option>
+                  <option value="french">french</option>
+                  <option value="spanish">spanish</option>
+                  <option value="german">german</option>
+                </Form.Select>
               </Form.Group>
             </Col>
           </Row>
 
-          {/* باقي الحقول */}
           <Row className="gx-3">
             <Col sm={6}>
               <Form.Group className="mb-3">
@@ -219,6 +246,17 @@ const CombinedInfo = ({ show, hide, client, updateClientData }) => {
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
                   placeholder="ZIP Code"
+                />
+              </Form.Group>
+            </Col>
+            <Col sm={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Address</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Address"
                 />
               </Form.Group>
             </Col>
