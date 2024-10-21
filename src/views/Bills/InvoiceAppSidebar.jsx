@@ -31,7 +31,7 @@ const InvoiceAppSidebar = () => {
               Create
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item as={Link} to="create-invoice">
+              <Dropdown.Item as={Link} to="create-bills">
                 Create Bills
               </Dropdown.Item>
               <Dropdown.Item>Create Estimate</Dropdown.Item>

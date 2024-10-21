@@ -1,157 +1,218 @@
-import React, { useState } from 'react';
-import SimpleBar from 'simplebar-react';
-import { Button, Col, Form, Row, } from 'react-bootstrap';
-import { columns, data } from './TableData';
-import HkDataTable from '../../../components/@hk-data-table';
+import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { useTable, usePagination, useFilters, useSortBy } from "react-table";
+import axios from "axios";
+import {
+  Button,
+  Col,
+  Form,
+  Row,
+  Dropdown,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
+import { BsThreeDotsVertical, BsEye, BsPencil, BsTrash } from "react-icons/bs";
+import { Link, useHistory } from "react-router-dom";
 
+const ContactAppBody = ({ fetchContacts, data }) => {
+  const [searchTerm, setSearchTerm] = useState(""); // إدارة البحث
+  const [showModal, setShowModal] = useState(false); // نافذة التأكيد
+  const [selectedContact, setSelectedContact] = useState(null); // جهة الاتصال المحددة
+  const [loading, setLoading] = useState(false); // حالة التحميل
+  const history = useHistory(); // للتنقل بين الصفحات
 
+  // **دالة لجلب التوكن المخزن في localStorage**
+  const getToken = () => localStorage.getItem("token");
 
-const ContactAppBody = () => {
+  // **دالة حذف جهة الاتصال**
+  const deleteContact = async (id) => {
+    setLoading(true); // تفعيل حالة التحميل
+    try {
+      const token = getToken();
+      await axios.delete(
+        `https://accounting.oncallwork.com/api/contact/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      await fetchContacts(); // تحديث البيانات بعد الحذف
+      setShowModal(false); // إغلاق النافذة
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+    } finally {
+      setLoading(false); // إيقاف حالة التحميل
+    }
+  };
 
-    const [searchTerm, setSearchTerm] = useState('');
+  // **فتح نافذة التأكيد للحذف**
+  const handleDeleteClick = (contact) => {
+    setSelectedContact(contact); // تخزين جهة الاتصال
+    setShowModal(true); // فتح النافذة
+  };
 
-    return (
-        <div className="contact-body">
-            <SimpleBar className="nicescroll-bar">
-                <div className="collapse" id="collapseQuick">
-                    <div className="quick-access-form-wrap">
-                        <Form className="quick-access-form border">
-                            <Row className="gx-3">
-                                <Col xxl={10}>
-                                    <div className="position-relative">
-                                        <div className="dropify-square">
-                                            <input type="file" className="dropify-1" />
-                                        </div>
-                                        <Col md={12}>
-                                            <Row className="gx-3">
-                                                <Col lg={4}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Control placeholder="First name*" type="text" />
-                                                    </Form.Group>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Control placeholder="Last name*" type="text" />
-                                                    </Form.Group>
-                                                </Col>
-                                                <Col lg={4}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Control placeholder="Email Id*" type="text" />
-                                                    </Form.Group>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Control placeholder="Phone" type="text" />
-                                                    </Form.Group>
-                                                </Col>
-                                                <Col lg={4}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Control placeholder="Department" type="text" />
-                                                    </Form.Group>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Select id="input_tags" multiple >
-                                                            <option value={1}>Collaborator</option>
-                                                            <option value={2} >Designer</option>
-                                                            <option value={3}>Developer</option>
-                                                        </Form.Select>
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </div>
-                                </Col>
-                                <Col xxl={2}>
-                                    <Form.Group className="mb-3">
-                                        <Button variant="primary" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" className="btn-block">Create New
-                                        </Button>
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Button variant="secondary" data-bs-toggle="collapse" disabled data-bs-target="#collapseExample" aria-expanded="false" className="btn-block">Discard
-                                        </Button>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </div>
-                </div>
-                <div className="contact-list-view">
+  // **إعادة جلب البيانات عند تحميل الصفحة والتنقل**
+  useEffect(() => {
+    fetchContacts(); // جلب البيانات عند التحميل
 
-                    <Row className="mb-3" >
-                        <Col xs={7} mb={3}>
-                            <div className="contact-toolbar-left">
-                                <Form.Group className="d-xxl-flex d-none align-items-center mb-0">
-                                    <Form.Select size='sm' className="w-120p">
-                                        <option value={1}>Bulk actions</option>
-                                        <option value={2}>Edit</option>
-                                        <option value={3}>Move to trash</option>
-                                    </Form.Select>
-                                    <Button size="sm" variant="light" className="ms-2">Apply</Button>
-                                </Form.Group>
-                                <Form.Group className="d-xxl-flex d-none align-items-center mb-0">
-                                    <label className="flex-shrink-0 mb-0 me-2">Sort by:</label>
-                                    <Form.Select size='sm' className="w-130p">
-                                        <option value={1}>Date Created</option>
-                                        <option value={2}>Date Edited</option>
-                                        <option value={3}>Frequent Contacts</option>
-                                        <option value={4}>Recently Added</option>
-                                    </Form.Select>
-                                </Form.Group>
-                                <Form.Select size="sm" className="d-flex align-items-center w-130p">
-                                    <option value={1}>Export to CSV</option>
-                                    <option value={2}>Export to PDF</option>
-                                    <option value={3}>Send Message</option>
-                                    <option value={4}>Delegate Access</option>
-                                </Form.Select>
-                            </div>
-                        </Col>
-                        <Col xs={5} mb={3}>
-                            <div className="contact-toolbar-right">
-                                <div className="dataTables_filter">
-                                    <Form.Label>
-                                        <Form.Control
-                                            size="sm"
-                                            type="search"
-                                            placeholder="Search"
-                                            value={searchTerm}
-                                            onChange={e => setSearchTerm(e.target.value)}
-                                        />
-                                    </Form.Label>
-                                </div>
-                                <div className="dataTables_paginate paging_simple_numbers" id="datable_1_paginate">
-                                    <ul className="pagination custom-pagination pagination-simple m-0">
-                                        <li className="paginate_button page-item previous disabled" id="datable_1_previous">
-                                            <a href="#some" data-dt-idx={0} tabIndex={0} className="page-link">
-                                                <i className="ri-arrow-left-s-line" />
-                                            </a>
-                                        </li>
-                                        <li className="paginate_button page-item active">
-                                            <a href="#some" data-dt-idx={1} tabIndex={0} className="page-link">1</a>
-                                        </li>
-                                        <li className="paginate_button page-item ">
-                                            <a href="#some" data-dt-idx={2} tabIndex={0} className="page-link">2</a>
-                                        </li>
-                                        <li className="paginate_button page-item next" id="datable_1_next">
-                                            <a href="#some" data-dt-idx={3} tabIndex={0} className="page-link">
-                                                <i className="ri-arrow-right-s-line" />
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
+    const unlisten = history.listen((location, action) => {
+      if (action === "POP") {
+        fetchContacts(); // إعادة الجلب عند العودة
+      }
+    });
 
-                    <HkDataTable
-                        column={columns}
-                        rowData={data}
-                        rowsPerPage={10}
-                        rowSelection={true}
-                        markStarred={true}
-                        searchQuery={searchTerm}
-                        classes="nowrap w-100 mb-5"
-                        responsive
-                    />
+    return () => unlisten(); // تنظيف عند إلغاء المكون
+  }, [fetchContacts, history]);
 
-                </div>
-            </SimpleBar >
-        </div >
-    )
-}
+  // **تعريف أعمدة الجدول**
+  const columns = useMemo(
+    () => [
+      { Header: "ID", accessor: "id" },
+      { Header: "Name", accessor: "name" },
+      { Header: "Organisation", accessor: "organisation" },
+      { Header: "Email", accessor: "email" },
+      { Header: "Phone", accessor: "telephone" },
+      { Header: "Address", accessor: "address" },
+      {
+        Header: "Actions",
+        Cell: ({ row }) => (
+          <div className="d-flex align-items-center">
+            <Button variant="link" className="p-0 me-2">
+              <BsEye size={20} />
+            </Button>
+            <Link
+              to={{
+                pathname: "edit-contact",
+                state: { client: row.original },
+              }}
+              className="btn btn-link p-0 me-2"
+            >
+              <BsPencil size={20} />
+            </Link>
+            <Button
+              variant="link"
+              className="p-0"
+              onClick={() => handleDeleteClick(row.original)}
+            >
+              <BsTrash size={20} />
+            </Button>
+            <Dropdown align="end">
+              <Dropdown.Toggle as={Button} variant="link" className="p-0 ms-2">
+                <BsThreeDotsVertical size={20} />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item as={Link} to={`/view/${row.original.id}`}>
+                  View
+                </Dropdown.Item>
+                <Dropdown.Item
+                  as={Link}
+                  to={{
+                    pathname: "edit-contact",
+                    state: { client: row.original },
+                  }}
+                >
+                  Edit
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => handleDeleteClick(row.original)}>
+                  Delete
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
 
-export default ContactAppBody
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    setGlobalFilter,
+  } = useTable({ columns, data }, useFilters, useSortBy, usePagination);
+
+  return (
+    <div className="contact-body">
+      <Row className="mb-3">
+        <Col xs={7}>
+          <Form.Control
+            type="search"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
+        </Col>
+        <Col xs={5} className="text-end">
+          <Button variant="primary">Export to CSV</Button>
+        </Col>
+      </Row>
+
+      {loading ? (
+        <div className="text-center py-5">
+          <Spinner animation="border" variant="primary" />
+          <p>Loading...</p>
+        </div>
+      ) : (
+        <table
+          {...getTableProps()}
+          className="table table-striped table-bordered"
+        >
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render("Header")}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? " 🔽"
+                          : " 🔼"
+                        : ""}
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+
+      {/* نافذة التأكيد للحذف */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this contact?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => deleteContact(selectedContact.id)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+};
+
+export default ContactAppBody;

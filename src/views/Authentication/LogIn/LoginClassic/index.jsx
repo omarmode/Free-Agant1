@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Button,
   Card,
@@ -9,20 +10,57 @@ import {
   Row,
 } from "react-bootstrap";
 import { Eye, EyeOff } from "react-feather";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import CommanFooter1 from "../../CommanFooter1";
-
-//Image
 import logo from "../../../../assets/img/logo-light.png";
 
-const LoginClassic = (props) => {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+const LoginClassic = () => {
+  const [email, setEmail] = useState(""); // البريد
+  const [password, setPassword] = useState(""); // كلمة المرور
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState(""); // لإظهار الرسائل
+  const history = useHistory(); // للتوجيه إلى صفحة أخرى
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    props.history.push("/dashboard");
+  // دالة تسجيل الدخول
+  const handleLogin = async (e) => {
+    e.preventDefault(); // منع إعادة تحميل الصفحة
+
+    try {
+      const response = await axios.post(
+        "https://accounting.oncallwork.com/api/login",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      console.log("Login successful:", response.data);
+
+      // تخزين التوكن في localStorage
+      const token = response.data.data.token;
+      setToken(token); // استدعاء الدالة لتخزين التوكن
+      setMessage("Login successful!");
+
+      // التوجيه إلى صفحة لوحة التحكم
+      setTimeout(() => {
+        history.push("/dashboard");
+      }, 2000);
+    } catch (error) {
+      console.error("Login failed:", error);
+      setMessage(
+        `Error: ${
+          error.response?.data?.message || "Login failed. Please try again."
+        }`
+      );
+    }
+  };
+
+  // دالة لتخزين التوكن في localStorage
+  const setToken = (token) => {
+    localStorage.setItem("token", token);
   };
 
   return (
@@ -32,7 +70,7 @@ const LoginClassic = (props) => {
           <Row>
             <Col sm={10} className="position-relative mx-auto">
               <div className="auth-content py-8">
-                <Form className="w-100" onSubmit={(e) => handleSubmit(e)}>
+                <Form className="w-100" onSubmit={handleLogin}>
                   <Row>
                     <Col lg={5} md={7} sm={10} className="mx-auto">
                       <div className="text-center mb-7">
@@ -49,23 +87,40 @@ const LoginClassic = (props) => {
                           <h4 className="mb-4 text-center">
                             Sign in to your account
                           </h4>
+
+                          {message && (
+                            <p
+                              className={`text-center ${
+                                message.includes("Error")
+                                  ? "text-danger"
+                                  : "text-success"
+                              }`}
+                            >
+                              {message}
+                            </p>
+                          )}
+
                           <Row className="gx-3">
                             <Col as={Form.Group} lg={12} className="mb-3">
                               <div className="form-label-group">
-                                <Form.Label>User Name</Form.Label>
+                                <Form.Label>Email</Form.Label>
                               </div>
                               <Form.Control
-                                placeholder="Enter username or email ID"
-                                type="text"
-                                value={userName}
-                                onChange={(e) => setUserName(e.target.value)}
+                                placeholder="Enter your email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                               />
                             </Col>
                             <Col as={Form.Group} lg={12} className="mb-3">
                               <div className="form-label-group">
                                 <Form.Label>Password</Form.Label>
-                                <Link to="#" className="fs-7 fw-medium">
-                                  Forgot Password ?
+                                <Link
+                                  to="/auth/forgot-password"
+                                  className="fs-7 fw-medium"
+                                >
+                                  Forgot Password?
                                 </Link>
                               </div>
                               <InputGroup className="password-check">
@@ -77,6 +132,7 @@ const LoginClassic = (props) => {
                                       setPassword(e.target.value)
                                     }
                                     type={showPassword ? "text" : "password"}
+                                    required
                                   />
                                   <Link
                                     to="#"
@@ -97,6 +153,7 @@ const LoginClassic = (props) => {
                               </InputGroup>
                             </Col>
                           </Row>
+
                           <div className="d-flex justify-content-center">
                             <Form.Check
                               id="logged_in"
@@ -111,6 +168,7 @@ const LoginClassic = (props) => {
                               </Form.Check.Label>
                             </Form.Check>
                           </div>
+
                           <Button
                             variant="primary"
                             type="submit"
@@ -118,8 +176,9 @@ const LoginClassic = (props) => {
                           >
                             Login
                           </Button>
+
                           <p className="p-xs mt-2 text-center">
-                            New to Jmapack ?{" "}
+                            New to Jmapack?{" "}
                             <Link to="signup-classic">
                               <u>Create new account</u>
                             </Link>
@@ -134,7 +193,6 @@ const LoginClassic = (props) => {
           </Row>
         </Container>
       </div>
-      {/* Page Footer */}
       <CommanFooter1 />
     </div>
   );

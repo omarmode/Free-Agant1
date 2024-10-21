@@ -3,6 +3,7 @@ import classNames from "classnames";
 import InvoiceAppSidebar from "../InvoiceAppSidebar";
 import Body from "./Body";
 import Header from "./Header";
+import BillsPreview from "./Body";
 
 const PreviewBills = () => {
   const [showSidebar, setShowSidebar] = useState(true);
@@ -21,7 +22,7 @@ const PreviewBills = () => {
               toggleSidebar={() => setShowSidebar(!showSidebar)}
               show={showSidebar}
             />
-            <Body />
+            <BillsPreview />
           </div>
         </div>
       </div>

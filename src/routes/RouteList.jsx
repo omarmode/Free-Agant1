@@ -45,6 +45,7 @@ import ChatBot from "../views/ChatPopup/ChatBot";
 import CreateBills from "../views/Bills/CreateInvoice";
 import PreviewBills from "../views/Bills/PreviewInvoice";
 import BillsList from "../views/Bills/InvoiceList";
+import ForgotPassword from "../views/Authentication/LogIn/LoginClassic/ForgotPassword";
 
 export const routes = [
   { path: "dashboard", exact: true, component: Dashboard },
@@ -129,5 +130,6 @@ export const authRoutes = [
   { path: "/signup-classic", exact: true, component: SignupClassic },
   { path: "/lock-screen", exact: true, component: LockScreen },
   { path: "/reset-password", exact: true, component: ResetPassword },
+  { path: "/forgot-password", exact: true, component: ForgotPassword },
   { path: "/error-503", exact: true, component: Error503 },
 ];

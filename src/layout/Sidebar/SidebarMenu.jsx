@@ -111,24 +111,24 @@ export const SidebarMenu = [
         id: "dash_contact",
         name: "Contact",
         icon: <Icons.Notebook />,
-        path: "/apps/contacts",
-        childrens: [
-          {
-            name: "Contact List",
-            path: "/apps/contacts/contact-list",
-            grp_name: "apps",
-          },
-          //   {
-          //     name: "Contact Cards",
-          //     path: "/apps/contacts/contact-cards",
-          //     grp_name: "apps",
-          //   },
-          {
-            name: "Edit Contact",
-            path: "/apps/contacts/edit-contact",
-            grp_name: "apps",
-          },
-        ],
+        path: "/apps/contacts/contact-list",
+        // childrens: [
+        //   // {
+        //   //   name: "Contact List",
+        //   //   path: "/apps/contacts/contact-list",
+        //   //   grp_name: "apps",
+        //   // },
+        //   //   {
+        //   //     name: "Contact Cards",
+        //   //     path: "/apps/contacts/contact-cards",
+        //   //     grp_name: "apps",
+        //   //   },
+        //   // {
+        //   //   name: "Edit Contact",
+        //   //   path: "/apps/contacts/edit-contact",
+        //   //   grp_name: "apps",
+        //   // },
+        // ],
       },
       //   {
       //     id: "dash_file",
@@ -204,57 +204,58 @@ export const SidebarMenu = [
         id: "dash_invoice",
         name: "Invoices",
         icon: <Icons.FileDigit />,
-        path: "/apps/invoices",
-        childrens: [
-          {
-            name: "Invoice List",
-            path: "/apps/invoices/invoice-list",
-            grp_name: "apps",
-          },
-          //   {
-          //     name: "Invoice Templates",
-          //     path: "/apps/invoices/invoice-templates",
-          //     grp_name: "apps",
-          //   },
-          {
-            name: "Create Invoice",
-            path: "/apps/invoices/create-invoice",
-            grp_name: "apps",
-          },
-          {
-            name: "Invoice Preview",
-            path: "/apps/invoices/invoice-preview",
-            grp_name: "apps",
-          },
-        ],
+        path: "/apps/invoices/invoice-list",
+        // childrens: [
+        //   {
+        //     name: "Invoice List",
+        //     path: "/apps/invoices/invoice-list",
+        //     grp_name: "apps",
+        //   },
+        //   //   {
+        //   //     name: "Invoice Templates",
+        //   //     path: "/apps/invoices/invoice-templates",
+        //   //     grp_name: "apps",
+        //   //   },
+        //   // {
+        //   //   name: "Create Invoice",
+        //   //   path: "/apps/invoices/create-invoice",
+        //   //   grp_name: "apps",
+        //   // },
+        //   {
+        //     name: "Invoice Preview",
+        //     path: "/apps/invoices/invoice-preview",
+        //     grp_name: "apps",
+        //   },
+        // ],
       },
       {
-        id: "dash_invoice",
+        id: "dash_integ",
         name: "Bills",
-        icon: <Icons.FileDigit />,
-        path: "/apps/bills",
-        childrens: [
-          {
-            name: "Bills List",
-            path: "/apps/bills/bills-list",
-            grp_name: "apps",
-          },
-          //   {
-          //     name: "Invoice Templates",
-          //     path: "/apps/invoices/invoice-templates",
-          //     grp_name: "apps",
-          //   },
-          {
-            name: "Create Bills",
-            path: "/apps/bills/create-bills",
-            grp_name: "apps",
-          },
-          {
-            name: "Bills Preview",
-            path: "/apps/bills/bills-preview",
-            grp_name: "apps",
-          },
-        ],
+        icon: <Icons.Code />,
+
+        path: "/apps/bills/bills-list",
+        // childrens: [
+        //   {
+        //     name: "Bills List",
+        //     path: "/apps/bills/bills-list",
+        //     grp_name: "apps",
+        //   },
+        //   //   {
+        //   //     name: "Invoice Templates",
+        //   //     path: "/apps/invoices/invoice-templates",
+        //   //     grp_name: "apps",
+        //   //   },
+        //   // {
+        //   //   name: "Create Bills",
+        //   //   path: "/apps/bills/create-bills",
+        //   //   grp_name: "apps",
+        //   // },
+        //   {
+        //     name: "Bills Preview",
+        //     path: "/apps/bills/bills-preview",
+        //     grp_name: "apps",
+        //   },
+        // ],
       },
       // {
       //     id: "dash_integ",
