@@ -13,6 +13,8 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.8.4",
     "@amcharts/amcharts5-geodata": "^5.1.2",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
@@ -22,6 +24,7 @@
     "@fullcalendar/list": "^6.1.11",
     "@fullcalendar/react": "^6.1.11",
     "@fullcalendar/timegrid": "^6.1.11",
+    "@mui/material": "^6.1.4",
     "@react-hook/window-size": "^3.1.1",
     "@reduxjs/toolkit": "^2.3.0",
     "@sweetalert2/theme-bootstrap-4": "^5.0.16",

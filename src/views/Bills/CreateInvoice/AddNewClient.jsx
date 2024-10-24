@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row, Alert } from "react-bootstrap";
 import axios from "axios";
 import { Redirect } from "react-router-dom"; // استيراد Redirect
@@ -9,17 +9,52 @@ const AddNewClient = ({ show, hide }) => {
     bill_number: "",
     date: "",
     contact_id: "",
-    status: "paid", // القيمة الافتراضية الجديدة
-    activity: "sent", // القيمة الافتراضية الجديدة
+    business_id: "", // إضافة business_id
+    status: "paid",
+    activity: "sent",
     amount: "",
   });
 
+  const [contacts, setContacts] = useState([]); // حالة Contacts
+  const [businesses, setBusinesses] = useState([]); // حالة Businesses
   const [loading, setLoading] = useState(false); // حالة التحميل
   const [error, setError] = useState(null); // حالة الخطأ
   const [redirect, setRedirect] = useState(false); // حالة التنقل
 
   // **جلب التوكن من `localStorage`**
   const getToken = () => localStorage.getItem("token");
+
+  // **جلب Contacts و Businesses من API عند فتح الـ Modal**
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = getToken();
+
+        // جلب Contacts
+        const contactsResponse = await axios.get(
+          "https://accounting.oncallwork.com/api/contacts",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setContacts(contactsResponse.data.data || []);
+
+        // جلب Businesses
+        const businessesResponse = await axios.get(
+          "https://accounting.oncallwork.com/api/businesses",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setBusinesses(businessesResponse.data.data.business || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Failed to load contacts or businesses.");
+      }
+    };
+
+    if (show) fetchData(); // جلب البيانات عند فتح الـ Modal
+  }, [show]);
 
   // **التعامل مع تغيير المدخلات**
   const handleChange = (e) => {
@@ -33,7 +68,7 @@ const AddNewClient = ({ show, hide }) => {
     setError(null);
 
     try {
-      const token = getToken(); // استخدام التوكن الديناميكي
+      const token = getToken();
       await axios.post(
         "https://accounting.oncallwork.com/api/bill/create",
         formData,
@@ -46,7 +81,7 @@ const AddNewClient = ({ show, hide }) => {
       );
 
       console.log("Bill created successfully");
-      hide(); // إغلاق النافذة
+      hide();
       setRedirect(true); // التبديل إلى true للتنقل
     } catch (error) {
       console.error("Error creating bill:", error.response?.data || error);
@@ -83,6 +118,7 @@ const AddNewClient = ({ show, hide }) => {
                 />
               </Form.Group>
             </Col>
+
             <Col sm={12} className="mb-3">
               <Form.Group>
                 <Form.Label>Date</Form.Label>
@@ -94,18 +130,47 @@ const AddNewClient = ({ show, hide }) => {
                 />
               </Form.Group>
             </Col>
+
+            {/* قائمة Contacts */}
             <Col sm={12} className="mb-3">
               <Form.Group>
-                <Form.Label>Contact ID</Form.Label>
+                <Form.Label>Contact</Form.Label>
                 <Form.Control
-                  type="text"
+                  as="select"
                   name="contact_id"
                   value={formData.contact_id}
                   onChange={handleChange}
-                  placeholder="Enter Contact ID"
-                />
+                >
+                  <option value="">-- Select Contact --</option>
+                  {contacts.map((contact) => (
+                    <option key={contact.id} value={contact.id}>
+                      {contact.name}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
             </Col>
+
+            {/* قائمة Businesses */}
+            <Col sm={12} className="mb-3">
+              <Form.Group>
+                <Form.Label>Business</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="business_id"
+                  value={formData.business_id}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Select Business --</option>
+                  {businesses.map((business) => (
+                    <option key={business.id} value={business.id}>
+                      {business.name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Col>
+
             <Col sm={12} className="mb-3">
               <Form.Group>
                 <Form.Label>Status</Form.Label>
@@ -115,12 +180,13 @@ const AddNewClient = ({ show, hide }) => {
                   value={formData.status}
                   onChange={handleChange}
                 >
-                  <option value="paid">paid</option>
-                  <option value="unpaid">unpaid</option>
-                  <option value="draft">draft</option>
+                  <option value="paid">Paid</option>
+                  <option value="unpaid">Unpaid</option>
+                  <option value="draft">Draft</option>
                 </Form.Control>
               </Form.Group>
             </Col>
+
             <Col sm={12} className="mb-3">
               <Form.Group>
                 <Form.Label>Activity</Form.Label>
@@ -130,11 +196,12 @@ const AddNewClient = ({ show, hide }) => {
                   value={formData.activity}
                   onChange={handleChange}
                 >
-                  <option value="sent">sent</option>
-                  <option value="done">done</option>
+                  <option value="sent">Sent</option>
+                  <option value="done">Done</option>
                 </Form.Control>
               </Form.Group>
             </Col>
+
             <Col sm={12} className="mb-3">
               <Form.Group>
                 <Form.Label>Amount</Form.Label>
@@ -150,6 +217,7 @@ const AddNewClient = ({ show, hide }) => {
           </Row>
         </Form>
       </Modal.Body>
+
       <Modal.Footer>
         <Button variant="secondary" onClick={hide} disabled={loading}>
           Discard

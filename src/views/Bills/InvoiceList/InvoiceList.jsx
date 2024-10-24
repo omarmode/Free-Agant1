@@ -5,21 +5,24 @@ import { Button, Col, Form, Row, Dropdown } from "react-bootstrap";
 import { BsThreeDotsVertical, BsEye, BsPencil, BsTrash } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // استيراد أنماط Toast
-import { confirmAlert } from "react-confirm-alert"; // استيراد نافذة التأكيد
-import "react-confirm-alert/src/react-confirm-alert.css"; // استيراد أنماط نافذة التأكيد
+import "react-toastify/dist/ReactToastify.css";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+import EditInfo from "../CreateInvoice/EditInfo"; // استيراد نموذج التعديل
 
 const InvoiceList = () => {
   const [data, setData] = useState([]); // حالة البيانات
   const [searchTerm, setSearchTerm] = useState(""); // حالة البحث
+  const [editBillId, setEditBillId] = useState(null); // حالة ID الفاتورة المراد تعديلها
+  const [showEditModal, setShowEditModal] = useState(false); // حالة عرض النافذة
 
-  // **جلب التوكن من `localStorage` بعد تسجيل الدخول**
+  // **جلب التوكن من `localStorage`**
   const getToken = () => localStorage.getItem("token");
 
   // **جلب الفواتير من API**
   const fetchInvoices = async () => {
     try {
-      const token = getToken(); // استخدام التوكن المخزن
+      const token = getToken();
       const response = await axios.get(
         "https://accounting.oncallwork.com/api/bills",
         {
@@ -30,7 +33,7 @@ const InvoiceList = () => {
           },
         }
       );
-      setData(response.data.data); // تحديث حالة البيانات
+      setData(response.data.data);
     } catch (error) {
       console.error("Failed to fetch bills:", error);
       toast.error("Failed to load bills.");
@@ -44,47 +47,46 @@ const InvoiceList = () => {
   // **حذف الفاتورة**
   const handleDelete = async (id) => {
     try {
-      const token = getToken(); // جلب التوكن الديناميكي
+      const token = getToken();
       await axios.delete(
         `https://accounting.oncallwork.com/api/bill/delete/${id}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      toast.success("bill deleted successfully!"); // رسالة نجاح
-      fetchInvoices(); // تحديث البيانات بعد الحذف
+      toast.success("Bill deleted successfully!");
+      fetchInvoices();
     } catch (error) {
-      console.error("Failed to delete bills:", error);
-      toast.error("Failed to delete bills. Please try again.");
+      console.error("Failed to delete bill:", error);
+      toast.error("Failed to delete bill. Please try again.");
     }
   };
 
-  // **تأكيد الحذف باستخدام نافذة تأكيد**
+  // **تأكيد الحذف**
   const confirmDelete = (id) => {
     confirmAlert({
       title: "Confirm to Delete",
-      message: "Are you sure you want to delete this bills?",
+      message: "Are you sure you want to delete this bill?",
       buttons: [
         {
           label: "Yes",
-          onClick: () => handleDelete(id), // تنفيذ الحذف عند التأكيد
+          onClick: () => handleDelete(id),
         },
         {
           label: "No",
-          onClick: () => toast.info("Deletion cancelled."), // إلغاء الحذف
+          onClick: () => toast.info("Deletion cancelled."),
         },
       ],
     });
   };
 
-  // **تعريف الأعمدة لعرض البيانات في الجدول**
+  // **تعريف الأعمدة**
   const columns = useMemo(
     () => [
-      { Header: "Bills Number", accessor: "bill_number" },
+      { Header: "Bill Number", accessor: "bill_number" },
       { Header: "Date", accessor: "date" },
       { Header: "Contact Name", accessor: "contact_name" },
+      { Header: "Business Name", accessor: "business_name" },
       { Header: "Status", accessor: "status" },
       { Header: "Activity", accessor: "activity" },
       { Header: "Amount", accessor: "amount" },
@@ -101,7 +103,14 @@ const InvoiceList = () => {
             >
               <BsEye size={20} /> {/* عرض */}
             </Link>
-            <Button variant="link" className="p-0 me-2">
+            <Button
+              variant="link"
+              className="p-0 me-2"
+              onClick={() => {
+                setEditBillId(row.original.id);
+                setShowEditModal(true); // فتح نافذة التعديل
+              }}
+            >
               <BsPencil size={20} /> {/* تعديل */}
             </Button>
             <Button
@@ -116,7 +125,12 @@ const InvoiceList = () => {
                 <BsThreeDotsVertical size={20} />
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item href={`/edit/${row.original.id}`}>
+                <Dropdown.Item
+                  onClick={() => {
+                    setEditBillId(row.original.id);
+                    setShowEditModal(true); // فتح نافذة التعديل
+                  }}
+                >
                   Edit
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => confirmDelete(row.original.id)}>
@@ -131,7 +145,6 @@ const InvoiceList = () => {
     []
   );
 
-  // **إعدادات الجدول باستخدام react-table**
   const {
     getTableProps,
     getTableBodyProps,
@@ -143,10 +156,10 @@ const InvoiceList = () => {
 
   return (
     <>
-      <ToastContainer /> {/* مكون Toast لعرض الإشعارات */}
+      <ToastContainer />
       <Row className="mb-3">
         <Col xs={7}>
-          <Form.Select size="sm" className="d-flex align-items-center w-130p">
+          <Form.Select size="sm">
             <option value={1}>Export to CSV</option>
             <option value={2}>Export to PDF</option>
             <option value={3}>Send Message</option>
@@ -198,20 +211,14 @@ const InvoiceList = () => {
           })}
         </tbody>
       </table>
-      <div className="dataTables_paginate paging_simple_numbers">
-        <ul className="pagination custom-pagination pagination-simple m-0">
-          <li className="paginate_button page-item previous disabled">
-            <Link to="#" className="page-link">
-              <i className="ri-arrow-left-s-line" />
-            </Link>
-          </li>
-          <li className="paginate_button page-item next disabled">
-            <Link to="#" className="page-link">
-              <i className="ri-arrow-right-s-line" />
-            </Link>
-          </li>
-        </ul>
-      </div>
+
+      {/* مكون تعديل الفاتورة */}
+      <EditInfo
+        show={showEditModal}
+        hide={() => setShowEditModal(false)}
+        billId={editBillId}
+        refreshBills={fetchInvoices}
+      />
     </>
   );
 };

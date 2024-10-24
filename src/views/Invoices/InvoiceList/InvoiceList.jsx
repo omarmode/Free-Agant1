@@ -5,21 +5,21 @@ import { Button, Col, Form, Row, Dropdown } from "react-bootstrap";
 import { BsThreeDotsVertical, BsEye, BsPencil, BsTrash } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // استيراد أنماط Toast
-import { confirmAlert } from "react-confirm-alert"; // استيراد نافذة التأكيد
-import "react-confirm-alert/src/react-confirm-alert.css"; // استيراد أنماط نافذة التأكيد
+import "react-toastify/dist/ReactToastify.css";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+// استيراد مكون التعديل
+import EditInfo from "../CreateInvoice/EditInfo";
 
 const InvoiceList = () => {
-  const [data, setData] = useState([]); // حالة البيانات
-  const [searchTerm, setSearchTerm] = useState(""); // حالة البحث
+  const [data, setData] = useState([]);
+  const [editInvoiceId, setEditInvoiceId] = useState(null); // لتحديد الفاتورة المراد تعديلها
 
-  // **جلب التوكن من `localStorage` بعد تسجيل الدخول**
   const getToken = () => localStorage.getItem("token");
 
-  // **جلب الفواتير من API**
   const fetchInvoices = async () => {
     try {
-      const token = getToken(); // استخدام التوكن المخزن
+      const token = getToken();
       const response = await axios.get(
         "https://accounting.oncallwork.com/api/invoices",
         {
@@ -30,7 +30,7 @@ const InvoiceList = () => {
           },
         }
       );
-      setData(response.data.data); // تحديث حالة البيانات
+      setData(response.data.data);
     } catch (error) {
       console.error("Failed to fetch invoices:", error);
       toast.error("Failed to load invoices.");
@@ -38,30 +38,26 @@ const InvoiceList = () => {
   };
 
   useEffect(() => {
-    fetchInvoices(); // جلب الفواتير عند تحميل الصفحة
+    fetchInvoices();
   }, []);
 
-  // **حذف الفاتورة**
   const handleDelete = async (id) => {
     try {
-      const token = getToken(); // جلب التوكن الديناميكي
+      const token = getToken();
       await axios.delete(
         `https://accounting.oncallwork.com/api/invoice/delete/${id}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      toast.success("Invoice deleted successfully!"); // رسالة نجاح
-      fetchInvoices(); // تحديث البيانات بعد الحذف
+      toast.success("Invoice deleted successfully!");
+      fetchInvoices();
     } catch (error) {
       console.error("Failed to delete invoice:", error);
       toast.error("Failed to delete invoice. Please try again.");
     }
   };
 
-  // **تأكيد الحذف باستخدام نافذة تأكيد**
   const confirmDelete = (id) => {
     confirmAlert({
       title: "Confirm to Delete",
@@ -69,22 +65,22 @@ const InvoiceList = () => {
       buttons: [
         {
           label: "Yes",
-          onClick: () => handleDelete(id), // تنفيذ الحذف عند التأكيد
+          onClick: () => handleDelete(id),
         },
         {
           label: "No",
-          onClick: () => toast.info("Deletion cancelled."), // إلغاء الحذف
+          onClick: () => toast.info("Deletion cancelled."),
         },
       ],
     });
   };
 
-  // **تعريف الأعمدة لعرض البيانات في الجدول**
   const columns = useMemo(
     () => [
       { Header: "Invoice Number", accessor: "invoice_number" },
       { Header: "Date", accessor: "date" },
       { Header: "Contact Name", accessor: "contact_name" },
+      { Header: "Business Name", accessor: "business_name" },
       { Header: "Status", accessor: "status" },
       { Header: "Activity", accessor: "activity" },
       { Header: "Amount", accessor: "amount" },
@@ -99,31 +95,22 @@ const InvoiceList = () => {
               }}
               className="btn btn-link p-0 me-2"
             >
-              <BsEye size={20} /> {/* عرض */}
+              <BsEye size={20} />
             </Link>
-            <Button variant="link" className="p-0 me-2">
-              <BsPencil size={20} /> {/* تعديل */}
+            <Button
+              variant="link"
+              className="p-0 me-2"
+              onClick={() => setEditInvoiceId(row.original.id)} // فتح النموذج
+            >
+              <BsPencil size={20} />
             </Button>
             <Button
               variant="link"
               className="p-0"
               onClick={() => confirmDelete(row.original.id)}
             >
-              <BsTrash size={20} /> {/* حذف */}
+              <BsTrash size={20} />
             </Button>
-            <Dropdown align="end">
-              <Dropdown.Toggle as={Button} variant="link" className="p-0 ms-2">
-                <BsThreeDotsVertical size={20} />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item href={`/edit/${row.original.id}`}>
-                  Edit
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => confirmDelete(row.original.id)}>
-                  Delete
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
           </div>
         ),
       },
@@ -131,7 +118,6 @@ const InvoiceList = () => {
     []
   );
 
-  // **إعدادات الجدول باستخدام react-table**
   const {
     getTableProps,
     getTableBodyProps,
@@ -143,26 +129,18 @@ const InvoiceList = () => {
 
   return (
     <>
-      <ToastContainer /> {/* مكون Toast لعرض الإشعارات */}
+      <ToastContainer />
       <Row className="mb-3">
-        <Col xs={7}>
-          <Form.Select size="sm" className="d-flex align-items-center w-130p">
-            <option value={1}>Export to CSV</option>
-            <option value={2}>Export to PDF</option>
-            <option value={3}>Send Message</option>
-            <option value={4}>Delegate Access</option>
-          </Form.Select>
-        </Col>
         <Col xs={5} className="text-end">
           <Form.Control
             size="sm"
             type="search"
             placeholder="Search"
-            value={searchTerm}
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
         </Col>
       </Row>
+
       <table
         {...getTableProps()}
         className="table table-striped table-bordered"
@@ -198,20 +176,15 @@ const InvoiceList = () => {
           })}
         </tbody>
       </table>
-      <div className="dataTables_paginate paging_simple_numbers">
-        <ul className="pagination custom-pagination pagination-simple m-0">
-          <li className="paginate_button page-item previous disabled">
-            <Link to="#" className="page-link">
-              <i className="ri-arrow-left-s-line" />
-            </Link>
-          </li>
-          <li className="paginate_button page-item next disabled">
-            <Link to="#" className="page-link">
-              <i className="ri-arrow-right-s-line" />
-            </Link>
-          </li>
-        </ul>
-      </div>
+
+      {editInvoiceId && (
+        <EditInfo
+          show={!!editInvoiceId}
+          hide={() => setEditInvoiceId(null)}
+          invoiceId={editInvoiceId}
+          refreshInvoices={fetchInvoices}
+        />
+      )}
     </>
   );
 };

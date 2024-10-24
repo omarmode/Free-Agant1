@@ -48,6 +48,7 @@ const InvoicePreview = () => {
       <h2>Invoice #{invoice.invoice_number}</h2>
       <p>Date: {invoice.date}</p>
       <p>Contact Name: {invoice.contact_name}</p>
+      <p>Business Name: {invoice.business_name}</p> {/* عرض business_name */}
       <p>Status: {invoice.status}</p>
       <Table bordered>
         <thead>

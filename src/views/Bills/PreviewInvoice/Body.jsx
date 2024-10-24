@@ -86,12 +86,16 @@ const BillsPreview = () => {
                     <div className="mb-1">Bill No:</div>
                     <div className="mb-1">Date:</div>
                     <div className="mb-1">Status:</div>
+                    <div className="mb-1">Business Name:</div>{" "}
+                    {/* إضافة اسم العمل */}
                     <div>Amount:</div>
                   </div>
                   <div className="text-dark">
                     <div className="mb-1">{bill.bill_number}</div>
                     <div className="mb-1">{bill.date}</div>
                     <div className="mb-1">{bill.status}</div>
+                    <div className="mb-1">{bill.business_name}</div>{" "}
+                    {/* عرض اسم العمل */}
                     <div>${bill.amount}</div>
                   </div>
                 </div>

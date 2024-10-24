@@ -17,11 +17,11 @@ const SignupClassic = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    businessName: "",
     password: "",
     passwordConfirmation: "",
-    domain: "", // إضافة حقل domain
+    domain: "", // Keeping domain input as requested
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const history = useHistory();
@@ -45,10 +45,9 @@ const SignupClassic = () => {
         {
           name: formData.name,
           email: formData.email,
-          business_name: formData.businessName,
           password: formData.password,
           password_confirmation: formData.passwordConfirmation,
-          domain: formData.domain, // إرسال domain في الطلب
+          domain: formData.domain, // Send domain in the request
         },
         {
           headers: {
@@ -63,9 +62,12 @@ const SignupClassic = () => {
       console.log("Registration successful:", response.data);
       setMessage(`Account created successfully! Domain: ${domain_name}`);
 
-      // إعادة التوجيه إلى صفحة تسجيل الدخول بعد النجاح
+      // Store the token under a different name (e.g., 'authToken')
+      localStorage.setItem("authToken", token);
+
+      // Redirect to wizard page after success
       setTimeout(() => {
-        history.push("login-classic");
+        history.push("wizard");
       }, 2000);
     } catch (error) {
       console.error("Registration failed:", error);
@@ -131,17 +133,6 @@ const SignupClassic = () => {
                               />
                             </Col>
                             <Col lg={6} as={Form.Group} className="mb-3">
-                              <Form.Label>Business Name</Form.Label>
-                              <Form.Control
-                                name="businessName"
-                                placeholder="Enter your business name"
-                                type="text"
-                                value={formData.businessName}
-                                onChange={handleChange}
-                                required
-                              />
-                            </Col>
-                            <Col lg={12} as={Form.Group} className="mb-3">
                               <Form.Label>Email</Form.Label>
                               <Form.Control
                                 name="email"

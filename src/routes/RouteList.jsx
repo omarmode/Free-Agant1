@@ -46,6 +46,7 @@ import CreateBills from "../views/Bills/CreateInvoice";
 import PreviewBills from "../views/Bills/PreviewInvoice";
 import BillsList from "../views/Bills/InvoiceList";
 import ForgotPassword from "../views/Authentication/LogIn/LoginClassic/ForgotPassword";
+import Wizard from "../views/Authentication/Wizard";
 
 export const routes = [
   { path: "dashboard", exact: true, component: Dashboard },
@@ -123,6 +124,7 @@ export const routes = [
 
 export const authRoutes = [
   { path: "/login", exact: true, component: Login },
+  { path: "/wizard", exact: true, component: Wizard },
   { path: "/login-simple", exact: true, component: LoginSimple },
   { path: "/login-classic", exact: true, component: LoginClassic },
   { path: "/signup", exact: true, component: Signup },
